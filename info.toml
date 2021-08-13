@@ -1,0 +1,10 @@
+[meta]
+name = "Extract Validation Replay"
+author = "skybaxrider"
+category = "Utilities"
+blocks = [ "Plugin_ExtractValidationReplay" ]
+siteid = 85
+version = "1.1"
+
+[script]
+imports = [ "Formatting.as", "Icons.as", "Permissions.as" ]
