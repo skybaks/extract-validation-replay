@@ -1,32 +1,38 @@
 
-bool permissionCheckPassed = false;
+bool g_permissionCheckPassed = false;
+
+void ExtractReplay()
+{
+    try
+    {
+        CGameDataFileManagerScript@ dataFileMgr = cast<CGameDataFileManagerScript>(cast<CSmArenaRulesMode>(GetApp().PlaygroundScript).DataFileMgr);
+        string outputFileName = "Downloaded/ValidationReplay_" + StripFormatCodes(GetApp().RootMap.MapName) + ".Replay.Gbx";
+        dataFileMgr.Replay_Save(outputFileName, GetApp().RootMap, dataFileMgr.Map_GetAuthorGhost(GetApp().RootMap));
+        string outputMessage = "Replay extracted to: " + outputFileName;
+        trace(outputMessage);
+        UI::ShowNotification("Extract Validation Replay", outputMessage, 10000);
+    }
+    catch
+    {
+        error("Error Occurred when trying to extract replay");
+    }
+}
 
 void RenderMenu()
 {
-    if (!permissionCheckPassed) return;
-    CTrackMania@ app = cast<CTrackMania>(GetApp());
-    if (UI::MenuItem("\\$65f" + Icons::ShareSquareO + "\\$z Extract Validation Replay", enabled: app.RootMap !is null))
+    if (!g_permissionCheckPassed) return;
+    if (UI::MenuItem("\\$65f" + Icons::ShareSquareO + "\\$z Extract Validation Replay", enabled: GetApp().RootMap !is null))
     {
-        try
-        {
-            CGameDataFileManagerScript@ dataFileMgr = cast<CGameDataFileManagerScript>(cast<CSmArenaRulesMode>(app.PlaygroundScript).DataFileMgr);
-            string outputFileName = "Downloaded/ValidationReplay_" + StripFormatCodes(app.RootMap.MapName) + ".Replay.Gbx";
-            dataFileMgr.Replay_Save(outputFileName, app.RootMap, dataFileMgr.Map_GetAuthorGhost(app.RootMap));
-            UI::ShowNotification("Extract Validation Replay", "Replay extracted to: " + outputFileName, 10000);
-        }
-        catch
-        {
-            error("Error Occurred when trying to extract replay");
-        }
+        startnew(ExtractReplay);
     }
 }
 
 void Main()
 {
-    permissionCheckPassed = true;
+    g_permissionCheckPassed = true;
     if (!Permissions::CreateLocalReplay())
     {
-        error(Meta::ExecutingPlugin().Name + ": Missing permission \"client_CreateLocalReplay\"");
-        permissionCheckPassed = false;
+        error("Missing permission \"client_CreateLocalReplay\"");
+        g_permissionCheckPassed = false;
     }
 }
