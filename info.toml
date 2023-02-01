@@ -4,7 +4,4 @@ author = "skybaxrider"
 category = "Utilities"
 blocks = [ "Plugin_ExtractValidationReplay" ]
 siteid = 85
-version = "1.2"
-
-[script]
-imports = [ "Formatting.as", "Icons.as", "Permissions.as" ]
+version = "1.2.1"
